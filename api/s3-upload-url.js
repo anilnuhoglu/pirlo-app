@@ -3,6 +3,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
+  forcePathStyle: true,
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -21,10 +22,13 @@ export default async function handler(req, res) {
       ContentType: 'application/json',
     })
 
-    const url = await getSignedUrl(s3, command, { expiresIn: 300 }) // 5 dakika geçerli
+    const url = await getSignedUrl(s3, command, {
+      expiresIn: 300
+    })
+
     res.status(200).json({ url })
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: "Something went wrong" })
+    console.error('S3 Signed URL Error:', err)
+    res.status(500).json({ error: "Failed to generate presigned URL" })
   }
 }
