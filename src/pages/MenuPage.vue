@@ -105,7 +105,11 @@ const closeProductPopup = () => {
                     :key="product.id"
                 >
                     <img :src="product.image" alt="Product Image">
-                    <h2>{{ product.name }}</h2>
+                    <div class="product-info">
+                        <div class="product-name">{{ product.name }}</div>
+                        <div class="product-description">{{ product.description }}</div>
+                        <div class="product-price">{{ product.price }} ₺</div>
+                    </div>
                     <button @click="openProductPopup(product)">
                         <font-awesome-icon icon="eye" />
                     </button>
@@ -272,29 +276,71 @@ const closeProductPopup = () => {
 }
 
 .category-products {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
 }
 
 .category-product {
-    width: 200px;
-    height: 200px;
+    width: auto;
+    height: 300px;
     border-radius: 10px;
     overflow: hidden;
     position: relative;
+    background-color: #ffe6d3;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ffe6d3;
 }
 
 .category-product img {
     width: 100%;
-    height: 100%;
+    height: 150px;
     object-fit: cover;
+}
+
+.product-info {
+    padding: 10px;
+}
+
+.product-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.product-price {
+    font-size: 0.9rem;
+    color: #722F37;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.product-description {
+    font-size: 0.8rem;
+    color: #666;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 10px;
 }
 
 .category-product button {
     position: absolute;
     top: 10px;
     right: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #722F37;
 }
 
 :deep(.swiper-button-next),

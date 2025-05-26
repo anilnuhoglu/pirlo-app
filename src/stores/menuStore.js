@@ -16,6 +16,10 @@ export const useMenuStore = defineStore('menu', {
       } finally {
         this.loading = false
       }
+    },
+    reset() {
+      this.menu = null
+      this.loading = false
     }
   }
 })

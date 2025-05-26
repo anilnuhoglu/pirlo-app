@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid'
 import Modal from '../components/Modal.vue'
+import { useMenuStore } from '../stores/menuStore'
 
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD
 const inputPassword = ref('')
@@ -121,6 +122,12 @@ const upload = async () => {
   await axios.put(data.url, file, {
     headers: { 'Content-Type': 'application/json' }
   })
+  
+  // Import menuStore
+  const menuStore = useMenuStore()
+  // Reset the store after successful upload
+  menuStore.menu = null
+  
   alert("Menü başarıyla yüklendi!")
 }
 
