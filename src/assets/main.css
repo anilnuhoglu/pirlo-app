@@ -2,22 +2,6 @@
 @import "swiper/less/navigation";
 @import "swiper/less/pagination";
 
-@font-face {
-    font-family: 'Rundfunk';
-    src: url('@/assets/fonts/Rundfunk.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Efco';
-    src: url('@/assets/fonts/Efco.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
 body {
   display: flex;
   justify-content: center;
