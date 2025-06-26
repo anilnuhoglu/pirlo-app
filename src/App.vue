@@ -1,17 +1,17 @@
 <template>
   <div class="main-container">
-    <div class="menu-button-icon">
+    <router-link class="menu-button-icon" to="/">
       <div class="menu-button-icon-image">
         <img class="menu-button-icon-image-img" src="@/assets/pirlo.svg" alt="Pirlo Ristorante">
       </div>
-    </div>
-    <div class="menu-button-container" v-if="$route.path === '/'">
+    </router-link>
+    <!-- <div class="menu-button-container" v-if="$route.path === '/'">
       <router-link class="menu-button-link" to="/menu">
         <div class="menu-button">
           Menu
         </div>
       </router-link>
-    </div>
+    </div> -->
     <router-view />
   </div>
 </template>
