@@ -55,7 +55,7 @@ const closeProductPopup = () => {
             <img 
                 v-for="i in 4" 
                 :key="i"
-                :src="`/src/assets/menu/menu${i}.jpeg`" 
+                :src="`/menu/menu${i}.jpeg`" 
                 :alt="`Menu ${i}`"
                 class="menu-image"
             />
