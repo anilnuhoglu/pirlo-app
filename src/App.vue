@@ -5,13 +5,13 @@
         <img class="menu-button-icon-image-img" src="@/assets/pirlo.svg" alt="Pirlo Ristorante">
       </div>
     </router-link>
-    <!-- <div class="menu-button-container" v-if="$route.path === '/'">
+    <div class="menu-button-container" v-if="$route.path === '/'">
       <router-link class="menu-button-link" to="/menu">
         <div class="menu-button">
           Menu
         </div>
       </router-link>
-    </div> -->
+    </div>
     <router-view />
   </div>
 </template>

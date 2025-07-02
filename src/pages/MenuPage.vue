@@ -51,7 +51,7 @@ const closeProductPopup = () => {
 
 <template>
     <div class="menu-container">
-        <div class="menu-images">
+        <!-- <div class="menu-images">
             <img 
                 v-for="i in 4" 
                 :key="i"
@@ -59,9 +59,9 @@ const closeProductPopup = () => {
                 :alt="`Menu ${i}`"
                 class="menu-image"
             />
-        </div>
+        </div> -->  
 
-        <!-- <div v-if="!activeCategory" class="menu-content">
+        <div v-if="!activeCategory" class="menu-content">
             <div class="category-grid">
                 <div 
                     v-for="category in categories" 
@@ -131,7 +131,7 @@ const closeProductPopup = () => {
             v-if="productPopup" 
             :product="productPopup" 
             @close="closeProductPopup" 
-        /> -->
+        />
     </div>
 </template>
 
