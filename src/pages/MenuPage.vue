@@ -138,6 +138,7 @@ const closeProductPopup = () => {
 <style scoped>
 .menu-container {
   width: 100%;
+
   padding: 20px;
 }
 
