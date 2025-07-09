@@ -61,6 +61,7 @@ const closeProductPopup = () => {
             />
         </div> -->  
 
+        
         <div v-if="!activeCategory" class="menu-content">
             <div class="category-grid">
                 <div 
