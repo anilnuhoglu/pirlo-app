@@ -500,6 +500,13 @@ const toggleCategory = (index) => {
   margin-bottom: 30px;
 }
 
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
 .header-content {
   display: flex;
   justify-content: space-between;
