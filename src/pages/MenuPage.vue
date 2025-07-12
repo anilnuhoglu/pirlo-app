@@ -214,8 +214,12 @@ const closeProductPopup = () => {
     transform: translate(-50%, -50%);
     color: #E8D8C3;
     text-align: center;
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: 600;
+    backdrop-filter: blur(3px);
+    border: 1px solid #fff;
+    padding: 5px;
+    text-align: center;
 }
 
 /* CategoryPage styles */
