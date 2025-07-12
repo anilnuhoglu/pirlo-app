@@ -137,7 +137,7 @@ const closeProductPopup = () => {
 
 <style scoped>
 .menu-container {
-  width: 100%;
+  width: 100vw;
   padding: 20px;
 }
 
@@ -285,11 +285,15 @@ const closeProductPopup = () => {
 }
 
 .category-nav-link-text {
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: 600;
     position: relative;
     z-index: 1;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    border: 1px solid #fff;
+    padding: 5px;
+    text-align: center;
 }
 
 .category-nav-link.active::after {
