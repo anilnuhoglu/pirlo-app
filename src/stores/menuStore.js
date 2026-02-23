@@ -9,7 +9,9 @@ export const useMenuStore = defineStore('menu', {
     async fetchMenu() {
       this.loading = true
       try {
-        const res = await fetch('https://pirlo-menu-app.s3.eu-central-1.amazonaws.com/menu.json')
+        const res = await fetch('https://pirlo-menu-app.s3.eu-central-1.amazonaws.com/menu.json', {
+          cache: 'no-store'
+        })
         this.menu = await res.json()
       } catch (error) {
         console.error('Menü yüklenirken hata oluştu:', error)
