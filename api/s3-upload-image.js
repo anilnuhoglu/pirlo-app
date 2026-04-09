@@ -2,6 +2,8 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 import { v4 as uuidv4 } from 'uuid'
 
+const publicAssetBaseUrl = (process.env.PUBLIC_ASSET_BASE_URL || 'https://pirlo-menu-app.s3.eu-central-1.amazonaws.com').replace(/\/+$/, '')
+
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
   credentials: {
@@ -24,18 +26,19 @@ export default async function handler(req, res) {
     }
   
     try {
-      const ext = req.query.ext || "jpg"
+      const ext = (req.query.ext || 'webp').toLowerCase()
       const filename = `images/${uuidv4()}.${ext}`
   
       const command = new PutObjectCommand({
         Bucket: process.env.AWS_BUCKET_NAME,
         Key: filename,
-        ContentType: `image/${ext}`
+        ContentType: `image/${ext}`,
+        CacheControl: 'public, max-age=31536000, immutable'
       })
   
       const url = await getSignedUrl(s3, command, { expiresIn: 300 })
   
-      const publicUrl =`https://pirlo-menu-app.s3.eu-central-1.amazonaws.com/${filename}`
+      const publicUrl = `${publicAssetBaseUrl}/${filename}`
   
       res.status(200).json({ url, publicUrl })
     } catch (err) {

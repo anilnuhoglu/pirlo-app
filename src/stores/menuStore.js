@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { fetchLatestMenuData } from '../utils/menuStorage'
 
 export const useMenuStore = defineStore('menu', {
   state: () => ({
@@ -9,10 +10,7 @@ export const useMenuStore = defineStore('menu', {
     async fetchMenu() {
       this.loading = true
       try {
-        const res = await fetch('https://pirlo-menu-app.s3.eu-central-1.amazonaws.com/menu.json', {
-          cache: 'no-store'
-        })
-        this.menu = await res.json()
+        this.menu = await fetchLatestMenuData()
       } catch (error) {
         console.error('Menü yüklenirken hata oluştu:', error)
       } finally {

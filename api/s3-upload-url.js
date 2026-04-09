@@ -16,17 +16,38 @@ export default async function handler(req, res) {
   }
 
   try {
-    const command = new PutObjectCommand({
+    const version = Date.now()
+    const menuKey = `menu/menu-${version}.json`
+    const manifestKey = 'menu/current.json'
+
+    const menuCommand = new PutObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: 'menu.json',
+      Key: menuKey,
       ContentType: 'application/json',
+      CacheControl: 'public, max-age=31536000, immutable'
     })
 
-    const url = await getSignedUrl(s3, command, {
+    const manifestCommand = new PutObjectCommand({
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: manifestKey,
+      ContentType: 'application/json',
+      CacheControl: 'no-store, max-age=0'
+    })
+
+    const menuUrl = await getSignedUrl(s3, menuCommand, {
       expiresIn: 300
     })
 
-    res.status(200).json({ url })
+    const manifestUrl = await getSignedUrl(s3, manifestCommand, {
+      expiresIn: 300
+    })
+
+    res.status(200).json({
+      menuUrl,
+      manifestUrl,
+      version,
+      menuKey
+    })
   } catch (err) {
     console.error('S3 Signed URL Error:', err)
     res.status(500).json({ error: "Failed to generate presigned URL" })

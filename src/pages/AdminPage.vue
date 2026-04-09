@@ -4,6 +4,7 @@ import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid'
 import Modal from '../components/Modal.vue'
 import { useMenuStore } from '../stores/menuStore'
+import { fetchLatestMenuData } from '../utils/menuStorage'
 
 const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD
 const inputPassword = ref('')
@@ -55,6 +56,51 @@ const deletingProductIndices = ref({ categoryIndex: null, productIndex: null })
 // Add new ref for expanded categories
 const expandedCategories = ref(new Set())
 
+const optimizeImage = (file, maxWidth = 1600, quality = 0.82) => new Promise((resolve, reject) => {
+  const reader = new FileReader()
+
+  reader.onload = () => {
+    const image = new Image()
+
+    image.onload = () => {
+      const ratio = image.width > maxWidth ? maxWidth / image.width : 1
+      const canvas = document.createElement('canvas')
+
+      canvas.width = Math.round(image.width * ratio)
+      canvas.height = Math.round(image.height * ratio)
+
+      const context = canvas.getContext('2d')
+
+      if (!context) {
+        reject(new Error('Canvas context bulunamadı'))
+        return
+      }
+
+      context.drawImage(image, 0, 0, canvas.width, canvas.height)
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          reject(new Error('Görsel optimize edilemedi'))
+          return
+        }
+
+        const optimizedFile = new File(
+          [blob],
+          `${file.name.replace(/\.[^.]+$/, '') || 'image'}.webp`,
+          { type: 'image/webp' }
+        )
+
+        resolve(optimizedFile)
+      }, 'image/webp', quality)
+    }
+
+    image.onerror = () => reject(new Error('Görsel okunamadı'))
+    image.src = reader.result
+  }
+
+  reader.onerror = () => reject(new Error('Dosya okunamadı'))
+  reader.readAsDataURL(file)
+})
+
 const authorize = () => {
   if (inputPassword.value === ADMIN_PASSWORD) {
     isAuthorized.value = true
@@ -66,8 +112,7 @@ const authorize = () => {
 
 const fetchMenu = async () => {
   try {
-    const res = await axios.get('https://pirlo-menu-app.s3.eu-central-1.amazonaws.com/menu.json')
-    menu.value = res.data
+    menu.value = await fetchLatestMenuData()
   } catch (err) {
     console.error('Menü verisi alınamadı:', err)
   }
@@ -97,12 +142,27 @@ const removeProduct = (categoryIndex, productIndex) => {
 }
 
 const uploadImage = async (event, target, categoryIndex = null, productIndex = null) => {
-  const file = event.target.files[0]
-  const ext = file.name.split('.').pop()
+  const originalFile = event.target.files[0]
+
+  if (!originalFile) {
+    return
+  }
+
+  let fileToUpload = originalFile
+
+  try {
+    fileToUpload = await optimizeImage(originalFile)
+  } catch (error) {
+    console.warn('Görsel optimize edilemedi, orijinal dosya yükleniyor:', error)
+  }
+
+  const ext = fileToUpload.name.split('.').pop()
   const { data } = await axios.get(`/api/s3-upload-image?ext=${ext}`)
-  await axios.put(data.url, file, {
-    headers: { 'Content-Type': file.type }
+
+  await axios.put(data.url, fileToUpload, {
+    headers: { 'Content-Type': fileToUpload.type }
   })
+
   const imageUrl = data.publicUrl
 
   if (target === 'category') {
@@ -117,16 +177,27 @@ const uploadImage = async (event, target, categoryIndex = null, productIndex = n
 }
 
 const upload = async () => {
-  const file = new File([JSON.stringify(menu.value)], "menu.json", { type: "application/json" })
+  const file = new File([JSON.stringify(menu.value)], 'menu.json', { type: 'application/json' })
   const { data } = await axios.get('/api/s3-upload-url')
-  await axios.put(data.url, file, {
+
+  await axios.put(data.menuUrl, file, {
+    headers: { 'Content-Type': 'application/json' }
+  })
+
+  const manifestFile = new File([
+    JSON.stringify({
+      key: data.menuKey,
+      version: data.version,
+      updatedAt: new Date(data.version).toISOString()
+    })
+  ], 'current.json', { type: 'application/json' })
+
+  await axios.put(data.manifestUrl, manifestFile, {
     headers: { 'Content-Type': 'application/json' }
   })
   
-  // Import menuStore
   const menuStore = useMenuStore()
-  // Reset the store after successful upload
-  menuStore.menu = null
+  menuStore.reset()
   
   alert("Menü başarıyla yüklendi!")
 }
