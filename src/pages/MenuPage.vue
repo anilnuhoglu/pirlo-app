@@ -70,7 +70,7 @@ const closeProductPopup = () => {
                     @click="activeCategory = category.name"
                 >
                     <div class="category-content">
-                        <img :src="category.image" alt="Category Image" class="category-image">
+                        <img :src="category.image" alt="Category Image" class="category-image" loading="lazy" decoding="async">
                         <div class="category-title">{{ category.name }}</div>
                     </div>
                 </div>
@@ -97,7 +97,7 @@ const closeProductPopup = () => {
                             :class="{ 'active': category.name === activeCategory }"
                             @click="activeCategory = category.name"
                         >
-                            <img :src="category.image" :alt="category.name" class="category-nav-image">
+                            <img :src="category.image" :alt="category.name" class="category-nav-image" loading="lazy" decoding="async">
                             <div class="category-nav-link-text">{{ category.name }}</div>
                         </div>
                     </SwiperSlide>
@@ -114,7 +114,7 @@ const closeProductPopup = () => {
                     v-for="product in selectedCategory?.products" 
                     :key="product.id"
                 >
-                    <img :src="product.image" alt="Product Image">
+                    <img :src="product.image" alt="Product Image" loading="lazy" decoding="async">
                     <div class="product-info">
                         <div class="product-name">{{ product.name }}</div>
                         <div class="product-description">{{ product.description }}</div>
